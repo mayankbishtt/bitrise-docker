@@ -1,9 +1,7 @@
-# app.py
 import sys
 
 def main():
-    name = "World"
-    print(f'Hello, {name}!')
+    print('Hello, World!')
     sys.stdout.flush()  # Ensure stdout buffer is flushed
 
 if __name__ == "__main__":
