@@ -1,3 +1,7 @@
-FROM alpine:3.3
+FROM python:3.9-slim
 
-CMD cat /etc/alpine-release
+WORKDIR /app
+
+COPY . /app
+
+CMD ["python", "app.py"]
