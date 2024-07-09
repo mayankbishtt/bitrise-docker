@@ -1,0 +1,37 @@
+format_version: '8'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+workflows:
+  version: 1
+  primary:
+    steps:
+      - git-clone: {}
+
+      # Build Docker image
+      - script:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -ex
+                docker build -t hello-world-app .
+
+      # Run Docker container
+      - script:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -ex
+                docker run -d --name hello-world-container hello-world-app
+
+      # Wait for Docker container to finish (optional)
+      - wait-for-step:
+          inputs:
+            - step_id: script@2
+
+      # Capture logs from Docker container
+      - script:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -ex
+                docker logs hello-world-container
