@@ -13,7 +13,7 @@ workflows:
             - content: |
                 #!/usr/bin/env bash
                 set -ex
-                docker build -t hello-world-app:v1 .
+                docker build -t mayankbisht26/hello-world-app:v1 .
 
       # Run Docker container
       - script:
@@ -21,7 +21,7 @@ workflows:
             - content: |
                 #!/usr/bin/env bash
                 set -ex
-                docker run -d --name hello-world-container hello-world-app:v1
+                docker run -d --name hello-world-container mayankbisht26/hello-world-app:v1
 
       # Wait for Docker container to finish (optional)
       - wait-for-step:
