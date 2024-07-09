@@ -1,26 +1,37 @@
----
-format_version: 11
+format_version: '8'
 default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
-trigger_map:
-- push_branch: "*"
-  workflow: primary
-- pull_request_source_branch: "*"
-  workflow: primary
+
 workflows:
+  version: 1
   primary:
     steps:
-    - activate-ssh-key@4:
-        run_if: ''
-    - git-clone@3.4.1: {}
-    - script@1:
-        title: docker run
-        inputs:
-        - content: |-
-            #!/bin/bash
-            # fail if any commands fails
-            set -e
-            # debug log
-            set -x
+      - git-clone: {}
 
-            docker build -t bitrise-minimal-sample .
-            docker run --rm bitrise-minimal-sample
+      # Build Docker image
+      - script:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -ex
+                docker build -t mayankbisht26/hello-world-app:v1 .
+
+      # Run Docker container
+      - script:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -ex
+                docker run -d --name hello-world-container mayankbisht26/hello-world-app:v1
+
+      # Wait for Docker container to finish (optional)
+      - wait-for-step:
+          inputs:
+            - step_id: script@2
+
+      # Capture logs from Docker container
+      - script:
+          inputs:
+            - content: |
+                #!/usr/bin/env bash
+                set -ex
+                docker logs hello-world-container
